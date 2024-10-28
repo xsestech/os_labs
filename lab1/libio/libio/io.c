@@ -23,18 +23,5 @@ ssize_t write_str(const int fd, const char *buff) {
 
 ssize_t reads_fd(const int fd, char *buff, const size_t buff_size) {
   ssize_t read_bytes = 0;
-  // while (read_bytes < buff_size - 1) {
-  //   char local_buff[1];
-  //   ssize_t bytes_read = read(fd, local_buff, 1);
-  //   if (bytes_read == -1) {
-  //    return -1;
-  //   }
-  //   if (local_buff[0] == '\n') {
-  //     break;
-  //   }
-  //   buff[read_bytes] = local_buff[0];
-  //   read_bytes++;
-  // }
-  // buff[read_bytes] = '\0';
   return read(fd, buff, buff_size);
 }
