@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     perror("Too big number of threads, execeed system limit");
     return -1;
   }
-
+  printf("Process pid %d\n", getpid());
   point_array_t points = points_read_from_file(argv[3]);
 
   const size_t queue_size = (size_t) pow((double) points.size, 3) / threads_num + 1;

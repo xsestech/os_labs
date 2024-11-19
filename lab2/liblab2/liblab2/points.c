@@ -5,7 +5,7 @@
  * @author xsestech 
  * @date 14.11.2024
  */
-#include "points.h"
+#include <liblab2/points.h>
 point_t point_create(double x, double y, double z) {
   return (point_t){x, y, z};
 }
