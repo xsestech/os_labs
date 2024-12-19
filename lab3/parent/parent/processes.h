@@ -10,11 +10,12 @@
 
 #include <unistd.h>
 #include <libio/io.h>
-#if defined(__clang__)
+#if defined(__APPLE__)
 #include <sys/syslimits.h>
 #else
 #include <limits.h>
 #endif
+#include <sys/wait.h>
 
 #include<libio/shared/shared.h>
 

@@ -22,14 +22,15 @@ int main(const int argc, char *argv[]) {
   }
   const pid_t pid = getpid();
   int file = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0600);
-  shared_handle_t shared = shared_consumer_open(argv[0], 4096);
-  if (shared == NULL) {
-    print_fd(STDERR_FILENO, "%d: Error accessing shared memory\n", pid);
-    exit(EXIT_FAILURE);
-  }
 
   if (file == -1) {
     print_fd(STDERR_FILENO, "%d: Error opening file %s\n", pid, argv[1]);
+    exit(EXIT_FAILURE);
+  }
+
+  shared_handle_t shared = shared_consumer_open(argv[0], 4096);
+  if (shared == NULL) {
+    print_fd(STDERR_FILENO, "%d: Error accessing shared memory\n", pid);
     exit(EXIT_FAILURE);
   }
 

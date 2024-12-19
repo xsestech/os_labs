@@ -31,7 +31,9 @@
 typedef struct {
  char name[SHARED_MAX_NAME_LEN + 1];
  size_t size;
- sem_t* sem;
+ // sem_t* sem;
+ sem_t* data_ready;
+ sem_t* buffer_empty;
  int fd;
  char* mem_ptr;
  bool is_producer;
