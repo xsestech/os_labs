@@ -56,11 +56,11 @@ void *allocator_alloc(allocator_t *const allocator, const size_t size) {
   if (block == NULL) {
     return NULL;
   }
-  while (block->next && block->size >= size) {
+  while (block->next && block->size < size) {
     prev_block = block;
     block = block->next;
   }
-  if (block->next == NULL && block->size < size) {
+  if (block->size < size) {
     return NULL;
   }
   if (block->size < size + sizeof(allocator_block_meta_t)) {
@@ -76,18 +76,19 @@ void *allocator_alloc(allocator_t *const allocator, const size_t size) {
   new_free_block->prev = block;
   if (prev_block != NULL) {
     prev_block->next = new_free_block;
+  } else {
+    allocator->next_free = new_free_block;
   }
-  allocator->next_free = new_free_block;
   block->size = size;
   block->next = NULL;
   return get_block_mem_from_meta(block);
 }
 
 allocator_block_meta_t *allocator_merge(allocator_t *const allocator, allocator_block_meta_t *block) {
-  if (block->prev && get_next_block_ptr(block->prev, block->prev->size) == block) {
-    block->prev->size += block->size + sizeof(allocator_block_meta_t);
-    block = block->prev;
-  }
+  // if (block->prev && get_next_block_ptr(block->prev, block->prev->size) == block) {
+  //   block->prev->size += block->size + sizeof(allocator_block_meta_t);
+  //   block = block->prev;
+  // }
   allocator_block_meta_t *next_block = get_next_block_ptr(block, block->size);
   if ((void *) next_block < allocator->max_ptr && (next_block->next || next_block == allocator->next_free)) {
     block->size += next_block->size + sizeof(allocator_block_meta_t);

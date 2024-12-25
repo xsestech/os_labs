@@ -11,8 +11,9 @@
 #include <libio/io.h>
 #include <dlfcn.h>
 #include <sys/mman.h>
+#include <sys/time.h>
 
-#define ALLOC_MEMORY_SIZE 131072 // 32 4KB blocks
+#define ALLOC_MEMORY_SIZE 41943040 // 40MB
 
 int main(int argc, char **argv) {
   (void) argc;
@@ -37,7 +38,10 @@ int main(int argc, char **argv) {
     munmap(memory, ALLOC_MEMORY_SIZE);
     return -1;
   }
-  const size_t mems_size = ALLOC_MEMORY_SIZE / 1024 / 2;
+  srand(0);
+  struct timeval tval_before, tval_after, tval_result;
+  gettimeofday(&tval_before, NULL);
+  const size_t mems_size = ALLOC_MEMORY_SIZE / 1024 * 0.9;
   void** mems[mems_size];
   for (size_t i = 0; i < mems_size; ++i) {
     mems[i] = lib.allocator_alloc(allocator, 1024);
@@ -48,30 +52,31 @@ int main(int argc, char **argv) {
       return -1;
     }
   }
+  size_t deallocated = 0;
   for (size_t i = 0; i < mems_size; ++i) {
-    if (i % 2 == 0) {
+    if (rand()  % 2 == 0) {
       lib.allocator_free(allocator, mems[i]);
+      deallocated++;
     }
   }
-  for (size_t i = 0; i < mems_size; ++i) {
-    if (i % 2 == 0) {
-      lib.allocator_free(allocator, mems[i]);
-    }
-  }
-  for (size_t i = 0; i < mems_size; ++i) {
-    mems[i] = lib.allocator_alloc(allocator, 1024);
-    if (!mems[i]) {
+  deallocated *= 0.8;
+  for (size_t i = 0; i < deallocated; ++i) {
+    if (!lib.allocator_alloc(allocator, 1024)) {
       print_fd(STDERR_FILENO, "Error during allocation");
       lib.allocator_destroy(allocator);
       munmap(memory, ALLOC_MEMORY_SIZE);
       return -1;
     }
   }
+
   size_t allocated_count = 0;
   while(lib.allocator_alloc(allocator, 256)) {
     allocated_count++;
   }
+  gettimeofday(&tval_after, NULL);
 
+  timersub(&tval_after, &tval_before, &tval_result);
+  print_fd(STDOUT_FILENO, "Allocations took %ld.%06ld sec, max 256 allocation count: %lu", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec, allocated_count);
   lib.allocator_destroy(allocator);
 
   munmap(memory, ALLOC_MEMORY_SIZE);
