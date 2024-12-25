@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.28)
+project(os_labs C)
+
+
+set(CMAKE_MODULE_PATH "${CMAKE_HOME_DIRECTORY}/cmake")
+add_subdirectory(libconfig)
+add_subdirectory(libio)
+add_subdirectory(liballoc-buddy)
+add_subdirectory(liballoc-freeblocks)
+add_subdirectory(liballoc-fallback)
+add_subdirectory(alloc)
+target_link_libraries(liballoc-freeblocks libio libconfig)
+target_link_libraries(liballoc-buddy libio libconfig)
+target_link_libraries(liballoc-fallback libio libconfig)
+target_link_libraries(alloc liballoc-fallback)
