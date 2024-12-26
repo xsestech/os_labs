@@ -15,10 +15,10 @@
 typedef struct {
  struct timeval time_start;
  struct timeval time_end;
-} timer_t;
+} ptimer_t;
 
-void timer_start(timer_t* timer);
+void ptimer_start(ptimer_t* timer);
 
-void timer_end(timer_t* timer);
+void ptimer_end(ptimer_t* timer);
 
-void timer_print(timer_t* timer);
+void ptimer_print(ptimer_t* timer);

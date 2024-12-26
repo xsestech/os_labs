@@ -12,6 +12,7 @@
 #include <libio/io.h>
 #include <dlfcn.h>
 #include <liballoc/fallback.h>
+#include <stdbool.h>
 
 typedef struct allocator_t allocator_t;
 
