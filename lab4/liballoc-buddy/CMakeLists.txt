@@ -1,6 +1,5 @@
 project(liballoc-buddy C)
 
-include(lib)
 set(LIBNAME liballoc)
 include(lib)
 file(GLOB sources "${PROJECT_SOURCE_DIR}/${LIBNAME}/*.c"

@@ -20,7 +20,7 @@ typedef struct allocator_block_meta_t allocator_block_meta_t;
 
 struct allocator_block_meta_t {
   size_t size;
-  allocator_block_meta_t *prev;
+  allocator_block_meta_t *prev_in_mem;
   allocator_block_meta_t *next;
 };
 
