@@ -10,6 +10,8 @@
 
 #include <stdlib.h>
 
+#define ALLOC_FREEBLOCKS_PREV_PTR_MERGE
+
 
 typedef struct  allocator_t allocator_t;
 
