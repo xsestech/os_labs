@@ -13,6 +13,8 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 
+#include "timer.h"
+
 #define ALLOC_MEMORY_SIZE 33554732 // 32MB
 
 int main(int argc, char **argv) {
@@ -39,10 +41,11 @@ int main(int argc, char **argv) {
     return -1;
   }
   srand(0);
-  struct timeval tval_before, tval_after, tval_result;
-  gettimeofday(&tval_before, NULL);
+  timer_t timer_alloc, timer_free;
+
   const size_t mems_size = ALLOC_MEMORY_SIZE / 1024 * 0.8;
   void** mems[mems_size];
+  timer_start(&timer_alloc);
   for (size_t i = 0; i < mems_size; ++i) {
     mems[i] = lib.allocator_alloc(allocator, 600);
     if (!mems[i]) {
@@ -52,6 +55,9 @@ int main(int argc, char **argv) {
       return -1;
     }
   }
+  timer_end(&timer_alloc);
+  print_fd(STDOUT_FILENO, "Allocation time:\n");
+  timer_print(&timer_alloc);
   size_t deallocated = 0;
   for (size_t i = 0; i < mems_size; ++i) {
     if (rand()  % 2 == 0) {
@@ -59,6 +65,7 @@ int main(int argc, char **argv) {
       deallocated++;
     }
   }
+  timer_start(&timer_free);
   deallocated *= 0.8;
   for (size_t i = 0; i < deallocated / 2; ++i) {
     if (!lib.allocator_alloc(allocator, 512)) {
@@ -68,10 +75,9 @@ int main(int argc, char **argv) {
       return -1;
     }
   }
-
-  gettimeofday(&tval_after, NULL);
-  timersub(&tval_after, &tval_before, &tval_result);
-  print_fd(STDOUT_FILENO, "Allocations took %ld.%06ld sec\n", (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
+  timer_end(&timer_free);
+  print_fd(STDOUT_FILENO, "Free time:\n");
+  timer_print(&timer_free);
 
   size_t allocated_count = 0;
   while(lib.allocator_alloc(allocator, 256)) {

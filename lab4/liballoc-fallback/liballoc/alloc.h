@@ -26,6 +26,7 @@ typedef struct {
   allocator_alloc_func *allocator_alloc;
   allocator_free_func *allocator_free;
   void *handle;
+  bool is_fallback;
 } allocator_lib_t;
 
 int allocator_lib_load(allocator_lib_t *lib, const char *path);

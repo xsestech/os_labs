@@ -91,12 +91,12 @@ void *allocator_alloc(allocator_t *const allocator, const size_t size) {
 }
 
 allocator_block_meta_t *allocator_merge(allocator_t *const allocator, allocator_block_meta_t *block) {
-  if (block->prev_in_mem && get_next_block_ptr(block->prev_in_mem, block->prev_in_mem->size) == block) {
-    block->prev_in_mem->size += block->size + sizeof(allocator_block_meta_t);
-    block->prev_in_mem->prev = block->prev_in_mem->next;
-    block->prev_in_mem->next = block->next;
-    block = block->prev_in_mem;
-  }
+  // if (block->prev_in_mem && get_next_block_ptr(block->prev_in_mem, block->prev_in_mem->size) == block) {
+  //   block->prev_in_mem->size += block->size + sizeof(allocator_block_meta_t);
+  //   block->prev_in_mem->prev = block->prev_in_mem->next;
+  //   block->prev_in_mem->next = block->next;
+  //   block = block->prev_in_mem;
+  // }
   allocator_block_meta_t *next_block = get_next_block_ptr(block, block->size);
   if ((void *) next_block < allocator->max_ptr && (next_block->next || next_block == allocator->next_free)) {
     block->size += next_block->size + sizeof(allocator_block_meta_t);
